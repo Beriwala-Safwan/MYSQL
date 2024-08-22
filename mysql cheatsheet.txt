@@ -1,0 +1,209 @@
+
+
+                                                MY SQL
+                                                SHORT OVERVIEW 
+
+
+
+create database college;
+
+use college;
+
+create table student(id int primary key,name varchar(10)not null,age int not null);
+
+insert into student values(1,"safwan",23);
+insert into student values(2,"zaid",22);
+insert into student values(3,"anas",21);
+
+select * from student;
+
+-- CREATE DB,TABLE AND INSERT RECORD
+create database polypack;
+use polypack;
+
+create table employee(id int primary key,name varchar(10)not null,salary int not null);
+
+insert into employee(id,name,salary)values(1,"safwan",30000),
+										(2,"zaid",35000),
+                                        (3,"anas",25000);
+                                        
+select * from employee;
+
+-- --default constraint
+
+create table emp(id int,salary int default 25000); 
+insert into emp (id)values(101);
+select * from emp;
+
+-- CHECK CONSTRAINT
+
+create table chk(id int ,age int,constraint check_age check(age > 18));
+insert into chk(id,age)values(1,19); 
+insert into chk(id,age)values(12,17); 
+
+use college;
+
+create table student2(rollno int primary key,name varchar(10),marks int not null,grades varchar(1),city varchar(20));
+insert into student2(rollno,name,marks,grades,city)values(101,"anil",78,"C","pune"),
+(102,"bhumika",93,"A","mumbai"),
+(103,"chetan",85,"B","mumbai"),
+(104,"dhruv",96,"A","delhi"),
+(105,"emanuel",12,"F","delhi"),
+(106,"farah",82,"B","delhi");
+
+-- --select specific column 
+select name,marks from student2;
+
+-- no repeatition values
+select distinct city from student2;
+
+-- WHERE CLAUSE
+select * from student2 where marks > 80 or city="mumbai";
+
+-- BETWEEN OPERATOR
+select * from student2 where marks between 80 and 90;
+
+-- IN OPERATOR
+select * from student2 where city in("delhi","mumbai");
+
+-- NOT IN OPERATOR- 
+select * from student2 where city not  in("delhi","mumbai");
+
+-- LIMIT
+ select * from student2 where marks > 70 limit  3;
+ 
+ -- ORDER BY
+ select marks from student2 order by marks asc; 
+  select marks from student2 order by marks desc limit 3; 
+  
+--   AGGREGRATE FUNCTION
+
+SELECT *
+FROM student2
+WHERE marks = (SELECT MAX(marks) as maximum FROM student2);
+
+SELECT MAX(marks) AS maximum_marks
+FROM student2;
+
+select sum(marks) as total_marks from student2;
+
+select min(marks) as minimum_marks from student2;
+
+select count(name) from student2;
+
+select avg(marks) from student2;
+
+-- GROUPBY CLAUSE
+select city,count(name) from student2 group by city;
+select * from student2;
+
+select city,avg(marks) as avg_marks from student2 group by city order by avg_marks desc;
+
+select grades,count(name) from student2 group by grades order by grades asc;
+
+-- HAVING CLAUSE codition on groups
+
+select city,count(rollno) from student2 group by city having max(marks) > 90;
+
+-- UPDATE
+use college;
+update student2
+set grades="O" where grades="A";
+
+update student2
+set marks=98
+where rollno=105;
+set sql_safe_updates=0;
+
+update student2
+set grades="B" where marks between 80 and 90;
+
+update student2
+set marks=26
+where rollno=105;
+
+-- DELETE
+select * from student2;
+
+delete from student2
+where marks < 30;
+
+-- FOREIGNKEY
+
+create table department(id int primary key,name varchar (10));
+create table teacher(id int primary key,name varchar (10),dept_id int,foreign key(dept_id) references department(id)on delete cascade on update cascade);
+drop table teacher;
+
+insert into department values(101,"english"),(102,"science");
+
+update department 
+set id=103
+where id=102;
+select * from department;
+insert into teacher values(101,"adam",101),(102,"bob",102);
+select * from teacher;
+
+-- ALTER COMMAND ADD COLUMN
+
+alter table student2
+add column age int not null default 19;
+select * from student2;
+
+-- DROP COLUMN
+alter table student2
+drop column age;
+
+-- MODIFY
+
+alter table student2
+modify column age varchar(2);
+
+-- CHANGE COL NAME
+
+alter table student2
+change age stu_age int;
+
+-- TRUNCATE 
+truncate table student2;
+
+-- JOINS IN SQL INNER JOIN
+
+create table student3(student_id int,name varchar (20));
+
+insert into student3 values(101,"adam"),
+(102,"bob"),
+(103,"cassey");
+create table course(student_id int ,course varchar(20));
+insert into course values(102,"english"),
+(105,"maths"),(103,"science"),(107,"science");
+
+select * from student3
+inner join course on student3.student_id=course.student_id;
+
+-- LEFT JOIN
+select * from student3 as s3
+left join course as crs on s3.student_id=crs.student_id;
+
+-- RIGHT JOIN
+
+select * from student3 as s3
+right join course as crs on s3.student_id=crs.student_id;
+
+-- FULL JOIN
+select * from student3 as s3
+left join course as crs on s3.student_id=crs.student_id union select * from student3 as s3 right join course as crs on s3.student_id=crs.student_id;
+
+-- NESTED QUERY
+select * from student2;
+
+select name,marks from student2
+where marks > (select avg(marks) from student2);
+
+select name,rollno from student2
+where rollno % 2=0;
+
+-- VIEW
+
+create view v1 as select name,rollno,marks from student2;
+
+select * from v1;
